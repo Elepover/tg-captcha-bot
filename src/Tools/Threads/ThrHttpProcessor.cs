@@ -5,6 +5,7 @@ using System.Web;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Telegram.Bot.Types.Enums;
 using telegram_captcha_bot.Logging;
 using telegram_captcha_bot.Settings;
 using static telegram_captcha_bot.Logging.Logging;
@@ -69,7 +70,12 @@ namespace telegram_captcha_bot
                                     await Response.OutputStream.WriteAsync(BufferValidate, 0, BufferValidate.Length);
                                     Response.OutputStream.Close();
                                     // try to notify user
-                                    await Vars.BotInstance.SendTextMessageAsync(ResolvedUser.UID, "🔓 *Verified!*\n\nSuccess! Your account is now verified!");
+                                    await Vars.BotInstance.SendTextMessageAsync(ResolvedUser.UID, "🔓 *Verified!*\n\nSuccess! Your account is now verified!", ParseMode.Markdown);
+                                    // remove user's restriction
+                                    foreach (Settings.Message Msg in ResolvedUser.Messages)
+                                    {
+                                        await Vars.BotInstance.RestrictChatMemberAsync(Msg.ChatID, (int)ResolvedUser.UID, DateTime.UtcNow, true, true, true, true);
+                                    }
                                     break;
                                 default:
                                     throw (new ArgumentException("Wrong request."));
