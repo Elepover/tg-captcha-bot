@@ -20,6 +20,7 @@ namespace telegram_captcha_bot
                 Update Upd = e.Update;
                 User Usr = e.Update.Message.From;
                 Log("Processing incoming update (UserRoute), ID: "+ Upd.Id + ", user: "+ Usr.FirstName + " " + Usr.LastName + ", UID: "+ Usr.Id, "BOT");
+                if (Upd.Message.Chat.Type != ChatType.Private) { return; }
                 // check if user exists
                 Settings.User DBUser = DB.GetUserByID(Upd.Message.From.Id);
                 if (DBUser == null)

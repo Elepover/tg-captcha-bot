@@ -24,14 +24,14 @@ namespace telegram_captcha_bot
             {
                 try
                 {
-                    if (e.Update.Message.Type == MessageType.Text)
+                    if (e.Update.Message.NewChatMembers != null)
                     {
-                        await MsgProcessor.RouteUserMsg(Sender, e);
+                        await MsgProcessor.RouteSystemMsg(e);
                         return;
                     }
-                    if (e.Update.Message.Type == MessageType.ChatMembersAdded)
+                    if (e.Update.Message.Type == MessageType.Text && e.Update.Message.Chat.Type == ChatType.Private)
                     {
-                        await MsgProcessor.RouteSystemMsg(Sender, e);
+                        await MsgProcessor.RouteUserMsg(Sender, e);
                         return;
                     }
                 }
